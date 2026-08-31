@@ -6,7 +6,7 @@ namespace Library
 {
     internal class BiblioteksMenu
     {
-
+        public static List<Book> Boghylde = [];
 
 
         public static void HovedMenu()
@@ -33,6 +33,7 @@ namespace Library
                         ListAlleBøger();
                         break;
                     case '2':
+                        SøgTitelMenu();
                         break;
                     case '3':
                         break;
@@ -50,8 +51,29 @@ namespace Library
 
         private static void ListAlleBøger()
         {
+            foreach (var item in Boghylde)
+            {
+                Console.WriteLine($"{item.Author}:",
+                    $"{item.Title} ",
+                    $"({item.PublicationYear}). ",
+                    $"ISBN: {item.ISBN}",
+                    $"{((item.IsOnLoan)?"UDLÅNT":"LEDIG")}");
+            }
+        }
+
+        private static void SøgTitelMenu()
+        {
 
         }
 
+        private static void LånISBNmenu()
+        {
+
+        }
+
+        private static void AfleverMenu()
+        {
+
+        }
     }
 }
