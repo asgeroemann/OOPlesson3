@@ -5,9 +5,9 @@
     {
 
         //FELTER
-        private string _title;
-        private string _author;
-        private string _ISBN;
+        private string _title = "";
+        private string _author = "";
+        private string _ISBN = "";
         private int _publicationYear;
         private bool _isOnLoan;
 
@@ -91,6 +91,16 @@
         {
             if (!_isOnLoan) { throw new InvalidOperationException("Bogen er ikke udlånt."); }
             else {  _isOnLoan = false; }
+        }
+
+        public string PrintInfo()
+        {
+            string info =$"{Author}: " +
+                    $"{Title} " +
+                    $"({(PublicationYear != Int32.MinValue ? PublicationYear.ToString() : "Ukendt Årstal")}). "+
+                    $"ISBN: {ISBN} "+
+                    $"{(IsOnLoan?"UDLÅNT":"LEDIG")}";
+            return info;
         }
     }
 }
