@@ -50,8 +50,6 @@
                     default: 
                         break;
                 }
-
-
             }
         }
 
@@ -114,7 +112,13 @@
             }
             Console.Write("Indtast ISBN: ");
             string? isbn = Console.ReadLine();
-            var book = Boghylde.FirstOrDefault(b => b.ISBN == isbn);
+            if (string.IsNullOrWhiteSpace(isbn))
+            {
+                Console.WriteLine("ISBN må ikke være tomt.");
+                Console.ReadKey(true);
+                return;
+            }
+            var book = BogHyldeDict.GetValueOrDefault(isbn);
             if (book == null)
             {
                 Console.WriteLine($"Ingen bog fundet med ISBN: {isbn}");
@@ -165,7 +169,13 @@
             }
             Console.Write("Indtast ISBN: ");
             string? isbn = Console.ReadLine();
-            var book = Boghylde.FirstOrDefault(b => b.ISBN == isbn);
+                        if (string.IsNullOrWhiteSpace(isbn))
+            {
+                Console.WriteLine("ISBN må ikke være tomt.");
+                Console.ReadKey(true);
+                return;
+            }
+            var book = BogHyldeDict.GetValueOrDefault(isbn);
             if (book == null)
             {
                 Console.WriteLine($"Ingen bog fundet med ISBN: {isbn}");
