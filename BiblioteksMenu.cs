@@ -2,8 +2,16 @@
 {
     internal class BiblioteksMenu
     {
-        public static List<Book> Boghylde = [new Book("Bogen om C#", "Michell Cronberg", "9788799338238", 2021)];
+        public static List<Book> Boghylde = [
+            new Book("Bogen om C#", "Michell Cronberg", "9788799338238", 2021),
+            new Book("Nightfall and other stories", "Isaac Asimov", "9780385081047", 1969),
+            new Book("The C Programming Language", "Brian W. Kernighan, Dennis M. Ritchie", "9780131103627", 1988),
+            new Book("På ski over Grønland", "Fridtjof Nansen", "9788702050010", 1890)
+            ];
 
+        public static Dictionary<string, Book> BogHyldeDict = Boghylde.ToDictionary(x => x.ISBN);
+        public static List<Borrower> LånerRegister = [new Borrower("Asger"),
+        new Borrower("Ellen")]; 
 
         public static void HovedMenu()
         {
@@ -90,7 +98,20 @@
         {
             Console.Clear();
             Console.WriteLine("LÅN EN BOG");
-
+            Console.WriteLine();
+            Console.WriteLine("Indtastlåner nr.");
+            int lånerNr;
+            while (!int.TryParse(Console.ReadLine(), out lånerNr))
+            {
+                Console.WriteLine("Ugyldigt input. Indtast et gyldigt lånernummer.");
+            }
+            var låner = LånerRegister.Find(l => l.BorrowerNumber == lånerNr); 
+            if (låner == null)
+            {
+                Console.WriteLine($"Ingen låner fundet med nummer: {lånerNr}");
+                Console.ReadKey(true);
+                return;
+            }
             Console.Write("Indtast ISBN: ");
             string? isbn = Console.ReadLine();
             var book = Boghylde.FirstOrDefault(b => b.ISBN == isbn);
@@ -100,14 +121,79 @@
                 Console.ReadKey(true);
                 return;
             }
-            book.CheckOut();
+            try{
+                book.CheckOut();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fejl: {ex.Message}");
+                Console.ReadKey(true);
+                return;
+            }
+            try
+            {
+                låner.BorrowBook();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fejl: {ex.Message}");
+                book.Return(); //Læg bogen tilbage hvis låneren ikke kan låne flere bøger.
+                Console.ReadKey(true);
+                return;   
+            }
             Console.WriteLine($"Bogen '{book.Title}' er nu udlånt.");
             Console.ReadKey(true);
         }
 
         private static void AfleverISBNmenu()
         {
-
+            Console.Clear();
+            Console.WriteLine("AFLEVER EN BOG");
+            Console.WriteLine();
+            Console.WriteLine("Indtast låner nr.");
+            int lånerNr;
+            while (!int.TryParse(Console.ReadLine(), out lånerNr))
+            {
+                Console.WriteLine("Ugyldigt input. Indtast et gyldigt lånernummer.");
+            }
+            var låner = LånerRegister.Find(l => l.BorrowerNumber == lånerNr); 
+            if (låner == null)
+            {
+                Console.WriteLine($"Ingen låner fundet med nummer: {lånerNr}");
+                Console.ReadKey(true);
+                return;
+            }
+            Console.Write("Indtast ISBN: ");
+            string? isbn = Console.ReadLine();
+            var book = Boghylde.FirstOrDefault(b => b.ISBN == isbn);
+            if (book == null)
+            {
+                Console.WriteLine($"Ingen bog fundet med ISBN: {isbn}");
+                Console.ReadKey(true);
+                return;
+            }
+            try{
+                book.Return();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fejl: {ex.Message}");
+                Console.ReadKey(true);
+                return;
+            }
+            try
+            {
+                låner.ReturnBook();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fejl: {ex.Message}");
+                book.CheckOut(); //Tag bogen tilbage hvis låneren ikke har nogen bøger at aflevere.
+                Console.ReadKey(true);
+                return;   
+            }
+            Console.WriteLine($"Bogen '{book.Title}' er nu afleveret.");
+            Console.ReadKey(true);
         }
     }
 }
